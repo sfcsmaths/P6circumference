@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周界特訓營：常見錯題破解</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 React 與 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- 引入 Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- 自訂 Icon 元件 ---
+        const Lightbulb = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>;
+        const Target = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+        const Play = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>;
+        const Pause = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>;
+        const ChevronLeft = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>;
+        const ChevronRight = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>;
+        const RotateCcw = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
+        const Trophy = ({ size = 24, className = "" }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+
+        // --- 分數排版元件 ---
+        const Fraction = ({ top, bottom }) => (
+            <span className="inline-flex flex-col items-center justify-center align-middle mx-1 font-bold">
+                <span className="border-b-[2.5px] border-current px-1 leading-none pb-[2px]">{top}</span>
+                <span className="px-1 leading-none pt-[2px]">{bottom}</span>
+            </span>
+        );
+
+        // --- 題庫資料 (完美修訂版) ---
+        const problems = [
+            {
+                id: 1,
+                title: "題目一：缺一角的圓",
+                themeColor: "blue",
+                piValue: "3.14",
+                steps: [
+                    { title: "👀 觀察圖形", content: "這是一個被剪去一角的圓形。周界包含了外圍的「曲線」，以及兩條切開的「直線」。", detail: "很多同學會忘記算直線！讓我們拆開來看。", visual: "full", duration: 4000 },
+                    { title: "✂️ 第一步：計算曲線長度", content: "外圍這條藍色曲線，是一個完整圓形的 3/4 (四分之三)。半徑是 5 cm。", detail: <div className="text-xl text-blue-700 bg-blue-50 p-2 rounded mt-2">10 × 3.14 × <Fraction top="3" bottom="4" /> = <span className="font-bold">23.55 cm</span></div>, visual: "arc", duration: 5000 },
+                    { title: "📏 第二步：計算直線長度", content: "圖形有兩條直線邊界，它們剛好都是圓的半徑 (5 cm)。", detail: <div className="text-xl text-emerald-700 bg-emerald-50 p-2 rounded mt-2">5 + 5 = <span className="font-bold">10 cm</span></div>, visual: "lines", duration: 4000 },
+                    { title: "✨ 第三步：合併總周界", content: "將「曲線」加上兩條「直線」，就是整個圖形的總周界！", detail: <div className="text-2xl text-purple-700 bg-purple-50 p-3 rounded mt-2 font-bold">23.55 + 10 = <span className="text-red-500 text-3xl">33.55 cm</span></div>, visual: "combine", duration: 5000 }
+                ]
+            },
+            {
+                id: 2,
+                title: "題目二：操場跑道形",
+                themeColor: "yellow",
+                piValue: "22/7",
+                steps: [
+                    { title: "👀 觀察圖形", content: "這是一個像操場跑道的圖形，由中間的長方形和左右「兩個半圓」拼成。周界包含外圍的上下兩條直線，以及左右兩條曲線。", detail: "虛線是告訴我們半圓的直徑，不屬於周界喔！", visual: "full", duration: 4500 },
+                    { title: "✂️ 第一步：計算曲線長度", content: "左右兩邊各有一個半圓，直徑都是 14 米。兩個半圓合起來剛好是一個完整的圓形！", detail: <div className="text-xl text-orange-700 bg-orange-50 p-2 rounded mt-2">14 × <Fraction top="22" bottom="7" /> = <span className="font-bold">44 米</span></div>, visual: "arc", duration: 5000 },
+                    { title: "📏 第二步：計算直線長度", content: "圖形的上方和下方各有一條實線，長度都是 21 米。", detail: <div className="text-xl text-emerald-700 bg-emerald-50 p-2 rounded mt-2">21 + 21 = <span className="font-bold">42 米</span></div>, visual: "lines", duration: 4000 },
+                    { title: "✨ 第三步：合併總周界", content: "把兩個半圓(一個圓)的長度，加上兩條直線的長度！", detail: <div className="text-2xl text-purple-700 bg-purple-50 p-3 rounded mt-2 font-bold">44 + 42 = <span className="text-red-500 text-3xl">86 米</span></div>, visual: "combine", duration: 5000 }
+                ]
+            },
+            {
+                id: 3,
+                title: "題目三：S型連續半圓",
+                themeColor: "green",
+                piValue: "22/7",
+                steps: [
+                    { title: "👀 觀察圖形", content: "這是一個 S 型的圖形。周界包含「上、下兩條半圓弧」，以及「左、右兩段實線」。", detail: "中間連接的虛線位於圖形內部，不包含在周界中喔！", visual: "full", duration: 5000 },
+                    { title: "✂️ 第一步：計算曲線長度", content: "觀察黑點(圓心)，左邊實線 7m 剛好是上半圓的半徑，右邊實線 7m 是下半圓的半徑(直徑都是14m)。上下兩個半圓合起來是一個完整的圓！", detail: <div className="text-xl text-green-700 bg-green-50 p-2 rounded mt-2">14 × <Fraction top="22" bottom="7" /> = <span className="font-bold">44 m</span></div>, visual: "arc", duration: 5000 },
+                    { title: "📏 第二步：計算直線長度", content: "外圍有兩段實線，分別在左邊和右邊，長度都是 7 米。", detail: <div className="text-xl text-emerald-700 bg-emerald-50 p-2 rounded mt-2">7 + 7 = <span className="font-bold">14 m</span></div>, visual: "lines", duration: 4000 },
+                    { title: "✨ 第三步：合併總周界", content: "把曲線總長加上兩段直線總長，就是最終答案！", detail: <div className="text-2xl text-purple-700 bg-purple-50 p-3 rounded mt-2 font-bold">44 + 14 = <span className="text-red-500 text-3xl">58 m</span></div>, visual: "combine", duration: 5000 }
+                ]
+            },
+            {
+                id: 4,
+                title: "題目四：彎彎月牙",
+                themeColor: "orange",
+                piValue: "3.14",
+                steps: [
+                    { title: "👀 觀察圖形", content: "這是一個像月亮的形狀。它的周界由一條「大弧」、一條「小弧」，以及一段「直線」組成。", detail: "這題最容易漏掉直線或是算錯直徑，讓我們一步步來！", visual: "full", duration: 4000 },
+                    { title: "✂️ 第一步：外側大半圓弧", content: "這是一個直徑為 40 cm 的大半圓弧（半徑 20+20=40？不對！看標示，大半圓的半徑是 20，所以直徑是 40）。", detail: <div className="text-xl text-blue-700 bg-blue-50 p-2 rounded mt-2">40 × 3.14 ÷ 2 = <span className="font-bold">62.8 cm</span></div>, visual: "large_arc", duration: 5000 },
+                    { title: "✂️ 第二步：內側小半圓弧", content: "被挖掉的小半圓，剛好佔了一半。所以它的直徑是 20 cm。", detail: <div className="text-xl text-orange-700 bg-orange-50 p-2 rounded mt-2">20 × 3.14 ÷ 2 = <span className="font-bold">31.4 cm</span></div>, visual: "small_arc", duration: 5000 },
+                    { title: "📏 第三步：直線長度", content: "右上方還有一段平平的實線，標示為 20 cm。", detail: <div className="text-xl text-emerald-700 bg-emerald-50 p-2 rounded mt-2">實線長度 = <span className="font-bold">20 cm</span></div>, visual: "lines", duration: 3000 },
+                    { title: "✨ 第四步：合併總周界", content: "把兩條不同大小的弧線，加上那一小段直線，就是完整的月牙周界！", detail: <div className="text-2xl text-purple-700 bg-purple-50 p-3 rounded mt-2 font-bold">62.8 + 31.4 + 20 = <span className="text-red-500 text-3xl">114.2 cm</span></div>, visual: "combine", duration: 5000 }
+                ]
+            }
+        ];
+
+        function App() {
+            const [activeTab, setActiveTab] = useState(1);
+            const [currentStep, setCurrentStep] = useState(0);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const timerRef = useRef(null);
+
+            const activeProblem = problems.find(p => p.id === activeTab);
+            const steps = activeProblem.steps;
+            const totalSteps = steps.length;
+
+            const handleTabClick = (id) => {
+                setActiveTab(id);
+                setCurrentStep(0);
+                setIsPlaying(false);
+            };
+
+            useEffect(() => {
+                if (isPlaying) {
+                    timerRef.current = setTimeout(() => {
+                        if (currentStep < totalSteps - 1) {
+                            setCurrentStep(prev => prev + 1);
+                        } else {
+                            setIsPlaying(false);
+                        }
+                    }, steps[currentStep].duration);
+                }
+                return () => clearTimeout(timerRef.current);
+            }, [isPlaying, currentStep, activeTab]);
+
+            const togglePlay = () => {
+                if (currentStep === totalSteps - 1) {
+                    setCurrentStep(0);
+                    setIsPlaying(true);
+                } else {
+                    setIsPlaying(!isPlaying);
+                }
+            };
+
+            const renderVisual = () => {
+                const v = steps[currentStep].visual;
+                
+                return (
+                    <svg viewBox={getBoxForTab(activeTab)} className="w-full h-full max-h-[250px] drop-shadow-md overflow-visible">
+                        <style>
+                            {`
+                                .draw-anim { stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.5s ease-in-out forwards; }
+                                .fade-in { opacity: 0; animation: fadeIn 0.8s ease-in forwards; }
+                                .fade-out { opacity: 1; animation: fadeOut 0.8s ease-in forwards; }
+                                .semi-transparent { opacity: 0.15; transition: opacity 0.8s; }
+                                @keyframes draw { to { stroke-dashoffset: 0; } }
+                                @keyframes fadeIn { to { opacity: 1; } }
+                                @keyframes fadeOut { to { opacity: 0.15; } }
+                            `}
+                        </style>
+                        {renderShapes(activeTab, v)}
+                    </svg>
+                );
+            };
+
+            const getBoxForTab = (tab) => {
+                switch(tab) {
+                    case 1: return "0 0 100 100";
+                    case 2: return "0 0 200 100";
+                    case 3: return "0 0 200 120";
+                    case 4: return "0 0 200 120";
+                    default: return "0 0 100 100";
+                }
+            };
+
+            const renderShapes = (tab, v) => {
+                const isFull = v === 'full';
+                const isCombine = v === 'combine';
+                
+                if (tab === 1) {
+                    // P1: 3/4 圓
+                    const fadeClass = isFull ? 'fade-in' : (isCombine ? 'fade-in' : 'semi-transparent');
+                    return (
+                        <g>
+                            <path d="M 50 10 A 40 40 0 1 1 10 50 L 50 50 Z" fill="#bae6fd" className={fadeClass} />
+                            <path d="M 10 50 A 40 40 0 0 1 50 10" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 3" />
+                            <circle cx="50" cy="50" r="2" fill="black" />
+                            <path d="M 50 50 L 50 10 M 50 50 L 10 50" fill="none" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2 2" />
+                            <path d="M 45 50 L 45 45 L 50 45" fill="none" stroke="black" strokeWidth="1" />
+                            <text x="30" y="58" fontSize="6">5 cm</text>
+                            <text x="54" y="30" fontSize="6">5 cm</text>
+
+                            {(v === 'arc' || isCombine) && (
+                                <path d="M 50 10 A 40 40 0 1 1 10 50" fill="none" stroke="#2563eb" strokeWidth="2.5" className={v === 'arc' ? 'draw-anim' : ''} />
+                            )}
+                            {(v === 'lines' || isCombine) && (
+                                <g className={v === 'lines' ? 'fade-in' : ''}>
+                                    <path d="M 10 50 L 50 50 L 50 10" fill="none" stroke="#10b981" strokeWidth="2.5" />
+                                </g>
+                            )}
+                        </g>
+                    );
+                }
+                else if (tab === 2) {
+                    // P2: 跑道形 (左右半圓)
+                    const fadeClass = isFull ? 'fade-in' : (isCombine ? 'fade-in' : 'semi-transparent');
+                    return (
+                        <g>
+                            {/* 填色背景 */}
+                            <path d="M 50 25 L 125 25 A 25 25 0 0 1 125 75 L 50 75 A 25 25 0 0 1 50 25 Z" fill="#fef08a" className={fadeClass} />
+                            
+                            {/* 虛線與標示 */}
+                            <line x1="50" y1="25" x2="50" y2="75" stroke="#64748b" strokeWidth="1" strokeDasharray="3 3" />
+                            <line x1="125" y1="25" x2="125" y2="75" stroke="#64748b" strokeWidth="1" strokeDasharray="3 3" />
+                            <circle cx="50" cy="50" r="1.5" fill="black" />
+                            <circle cx="125" cy="50" r="1.5" fill="black" />
+                            
+                            {/* 直角符號 */}
+                            <path d="M 50 31 L 56 31 L 56 25" fill="none" stroke="black" strokeWidth="0.5" />
+                            <path d="M 50 69 L 56 69 L 56 75" fill="none" stroke="black" strokeWidth="0.5" />
+                            <path d="M 125 31 L 119 31 L 119 25" fill="none" stroke="black" strokeWidth="0.5" />
+                            <path d="M 125 69 L 119 69 L 119 75" fill="none" stroke="black" strokeWidth="0.5" />
+
+                            {/* 箭頭與尺寸 */}
+                            <line x1="50" y1="15" x2="125" y2="15" stroke="black" strokeWidth="0.5" />
+                            <polygon points="50,15 53,13 53,17" fill="black" />
+                            <polygon points="125,15 122,13 122,17" fill="black" />
+                            <text x="87.5" y="11" fontSize="6" textAnchor="middle">21 米</text>
+                            
+                            <line x1="135" y1="25" x2="135" y2="75" stroke="black" strokeWidth="0.5" />
+                            <polygon points="135,25 133,28 137,28" fill="black" />
+                            <polygon points="135,75 133,72 137,72" fill="black" />
+                            <text x="144" y="52" fontSize="6" textAnchor="middle">14 米</text>
+
+                            {/* 動態邊界 */}
+                            {(v === 'arc' || isCombine) && (
+                                <g>
+                                    <path d="M 50 75 A 25 25 0 0 1 50 25" fill="none" stroke="#f97316" strokeWidth="2.5" className={v === 'arc' ? 'draw-anim' : ''} />
+                                    <path d="M 125 25 A 25 25 0 0 1 125 75" fill="none" stroke="#f97316" strokeWidth="2.5" className={v === 'arc' ? 'draw-anim' : ''} />
+                                </g>
+                            )}
+                            
+                            {(v === 'lines' || isCombine) && (
+                                <g className={v === 'lines' ? 'fade-in' : ''}>
+                                    <path d="M 50 25 L 125 25" fill="none" stroke="#10b981" strokeWidth="2.5" />
+                                    <path d="M 50 75 L 125 75" fill="none" stroke="#10b981" strokeWidth="2.5" />
+                                </g>
+                            )}
+                        </g>
+                    );
+                }
+                else if (tab === 3) {
+                    // P3: S型連續半圓 (完美修正版)
+                    const fadeClass = isFull ? 'fade-in' : (isCombine ? 'fade-in' : 'semi-transparent');
+                    return (
+                        <g>
+                            {/* 填色背景 */}
+                            {/* 左側上半圓 */}
+                            <path d="M 44 60 L 100 60 A 28 28 0 0 0 44 60 Z" fill="#bbf7d0" className={fadeClass} />
+                            {/* 右側下半圓 (已修正沿軸對稱翻轉) */}
+                            <path d="M 72 60 L 128 60 A 28 28 0 0 1 72 60 Z" fill="#bbf7d0" className={fadeClass} />
+                            
+                            {/* 中間虛線 */}
+                            <line x1="72" y1="60" x2="100" y2="60" stroke="#64748b" strokeWidth="1" strokeDasharray="3 3" />
+                            
+                            {/* 圓心黑點 */}
+                            <circle cx="72" cy="60" r="1.5" fill="black" />
+                            <circle cx="100" cy="60" r="1.5" fill="black" />
+                            
+                            {/* 直線段 (實線) */}
+                            <line x1="44" y1="60" x2="72" y2="60" stroke="black" strokeWidth="1" />
+                            <line x1="100" y1="60" x2="128" y2="60" stroke="black" strokeWidth="1" />
+
+                            {/* 標示 (完美對應原圖上下位置) */}
+                            <text x="58" y="68" fontSize="6" textAnchor="middle">7 m</text>
+                            <text x="114" y="56" fontSize="6" textAnchor="middle">7 m</text>
+
+                            {/* 動態邊界 */}
+                            {(v === 'arc' || isCombine) && (
+                                <g>
+                                    {/* 畫上半圓弧 */}
+                                    <path d="M 100 60 A 28 28 0 0 0 44 60" fill="none" stroke="#059669" strokeWidth="2.5" className={v === 'arc' ? 'draw-anim' : ''} />
+                                    {/* 畫下半圓弧 (已修正往下繪製) */}
+                                    <path d="M 72 60 A 28 28 0 0 0 128 60" fill="none" stroke="#059669" strokeWidth="2.5" className={v === 'arc' ? 'draw-anim' : ''} />
+                                </g>
+                            )}
+                            
+                            {(v === 'lines' || isCombine) && (
+                                <g className={v === 'lines' ? 'fade-in' : ''}>
+                                    <path d="M 44 60 L 72 60" fill="none" stroke="#3b82f6" strokeWidth="2.5" />
+                                    <path d="M 100 60 L 128 60" fill="none" stroke="#3b82f6" strokeWidth="2.5" />
+                                </g>
+                            )}
+                        </g>
+                    );
+                }
+                else if (tab === 4) {
+                    // P4: 月牙
+                    const fadeClass = isFull ? 'fade-in' : (isCombine ? 'fade-in' : 'semi-transparent');
+                    return (
+                        <g>
+                            <path d="M 60 50 A 40 40 0 0 0 140 50 L 100 50 A 20 20 0 0 1 60 50 Z" fill="#fed7aa" className={fadeClass} />
+                            <path d="M 60 50 L 100 50" fill="none" stroke="#64748b" strokeWidth="1" strokeDasharray="3 3" />
+                            <circle cx="60" cy="50" r="1.5" fill="black" />
+                            <circle cx="100" cy="50" r="1.5" fill="black" />
+                            
+                            <text x="120" y="44" fontSize="6" textAnchor="middle">20 cm</text>
+                            <line x1="102" y1="46" x2="138" y2="46" stroke="black" strokeWidth="0.5" />
+                            <polygon points="102,46 105,44 105,48" fill="black" />
+                            <polygon points="138,46 135,44 135,48" fill="black" />
+
+                            {(v === 'large_arc' || isCombine) && (
+                                <path d="M 60 50 A 40 40 0 0 0 140 50" fill="none" stroke="#2563eb" strokeWidth="2.5" className={v === 'large_arc' ? 'draw-anim' : ''} />
+                            )}
+                            {(v === 'small_arc' || isCombine) && (
+                                <path d="M 60 50 A 20 20 0 0 0 100 50" fill="none" stroke="#ea580c" strokeWidth="2.5" className={v === 'small_arc' ? 'draw-anim' : ''} />
+                            )}
+                            {(v === 'lines' || isCombine) && (
+                                <g className={v === 'lines' ? 'fade-in' : ''}>
+                                    <path d="M 100 50 L 140 50" fill="none" stroke="#10b981" strokeWidth="2.5" />
+                                </g>
+                            )}
+                        </g>
+                    );
+                }
+            };
+
+            const getThemeClasses = (color) => {
+                const themes = {
+                    blue: { bg: 'bg-blue-600', hover: 'hover:bg-blue-700', border: 'border-blue-200', text: 'text-blue-800' },
+                    yellow: { bg: 'bg-yellow-500', hover: 'hover:bg-yellow-600', border: 'border-yellow-200', text: 'text-yellow-800' },
+                    green: { bg: 'bg-emerald-600', hover: 'hover:bg-emerald-700', border: 'border-emerald-200', text: 'text-emerald-800' },
+                    orange: { bg: 'bg-orange-500', hover: 'hover:bg-orange-600', border: 'border-orange-200', text: 'text-orange-800' }
+                };
+                return themes[color];
+            };
+
+            const theme = getThemeClasses(activeProblem.themeColor);
+
+            return (
+                <div className="flex flex-col min-h-screen font-sans text-gray-800 pb-10">
+                    <div className="bg-slate-800 text-white shadow-md sticky top-0 z-10">
+                        <div className="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+                            <h1 className="text-xl font-bold flex items-center gap-2">
+                                <Target className="text-red-400" />
+                                周界特訓營
+                            </h1>
+                            <div className="flex gap-2 overflow-x-auto pb-1">
+                                {problems.map(p => (
+                                    <button 
+                                        key={p.id}
+                                        onClick={() => handleTabClick(p.id)}
+                                        className={`px-4 py-2 rounded-lg font-bold whitespace-nowrap transition-colors ${activeTab === p.id ? 'bg-white text-slate-800 shadow-sm' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
+                                    >
+                                        題目 {p.id}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex-1 max-w-4xl mx-auto w-full p-4 mt-6">
+                        <div className={`bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col border-2 ${theme.border}`}>
+                            <div className={`${theme.bg} text-white p-4 transition-colors duration-500`}>
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                                        <Lightbulb className="text-yellow-300" />
+                                        {activeProblem.title}
+                                    </h2>
+                                    <span className="font-mono bg-black/20 px-3 py-1 rounded-full text-sm font-bold">
+                                        π = {activeProblem.piValue}
+                                    </span>
+                                </div>
+                                <div className="flex gap-1 mt-4">
+                                    {steps.map((_, index) => (
+                                        <div key={index} className={`h-2 flex-1 rounded-full transition-all duration-300 ${index <= currentStep ? 'bg-white/90' : 'bg-black/20'}`} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center bg-[url('https://www.transparenttextures.com/patterns/notebook-dark.png')]">
+                                <div className="w-full md:w-1/2 flex items-center justify-center bg-white border-2 border-dashed border-gray-300 rounded-xl p-4 min-h-[250px] relative shadow-inner">
+                                    {renderVisual()}
+                                    {steps[currentStep].visual === 'combine' && (
+                                        <div className="absolute top-4 right-4 animate-bounce text-yellow-500 drop-shadow-md">
+                                            <Trophy size={48} />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="w-full md:w-1/2 flex flex-col gap-4 min-h-[200px] justify-center bg-white/90 p-5 rounded-xl shadow-sm backdrop-blur-sm border border-gray-100">
+                                    <h3 className={`text-2xl font-bold ${theme.text} transition-colors duration-300`}>{steps[currentStep].title}</h3>
+                                    <p className="text-lg text-gray-700 leading-relaxed font-medium">{steps[currentStep].content}</p>
+                                    <div className="mt-2 text-md">{steps[currentStep].detail}</div>
+                                </div>
+                            </div>
+
+                            <div className="bg-slate-100 border-t border-gray-200 p-4 flex items-center justify-between">
+                                <button onClick={togglePlay} className={`flex items-center gap-2 px-6 py-3 ${theme.bg} ${theme.hover} text-white font-semibold rounded-full transition-colors`}>
+                                    {isPlaying ? <Pause size={20} /> : (currentStep === totalSteps - 1 ? <RotateCcw size={20} /> : <Play size={20} />)}
+                                    {isPlaying ? '暫停動畫' : (currentStep === totalSteps - 1 ? '重新播放' : '自動播放')}
+                                </button>
+
+                                <div className="flex items-center gap-3">
+                                    <button onClick={() => {if(currentStep > 0) {setCurrentStep(c => c-1); setIsPlaying(false);}}} disabled={currentStep === 0} className={`p-3 rounded-full flex items-center justify-center transition-colors ${currentStep === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white border-2 border-slate-400 text-slate-600 hover:bg-slate-200'}`}><ChevronLeft size={24} /></button>
+                                    <span className="font-bold text-gray-500 w-16 text-center">{currentStep + 1} / {totalSteps}</span>
+                                    <button onClick={() => {if(currentStep < totalSteps - 1) {setCurrentStep(c => c+1); setIsPlaying(false);}}} disabled={currentStep === totalSteps - 1} className={`p-3 rounded-full flex items-center justify-center transition-colors ${currentStep === totalSteps - 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : `${theme.bg} text-white ${theme.hover} shadow-md`}`}><ChevronRight size={24} /></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
